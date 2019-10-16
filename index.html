@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="index.css">
+  <!--<link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css"/>-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="node_modules/leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css">
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css">  
+  <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css">  
+  
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />-->
+  <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">-->
+  <!--<link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.css">-->
+  <!--<link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.Default.css">-->
+
+  <!--*********Materialize********-->
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body>
+  <nav id="barrita">
+    <div class="nav-wrapper grey darken-4">
+      
+      <a id="filtro" href="#" class="brand-logo left">
+          <i data-target="slide-out" class="material-icons sidenav-trigger">apps</i>
+      </a>
+      
+      <a class="brand-logo center">
+          <i class="material-icons">dashboard</i>
+      </a>
+      
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li class="active"><a href="#">SIG</a></li>
+        <li class="active"><a id="bAbout" href="#">Acerca de</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <ul id="slide-out" class="sidenav">
+    <li><div class="user-view">
+      <div class="background">
+        <img src="assets/office.jpg">
+      </div>
+      <a href="#user"><img class="circle" src="assets/yuna.jpg"></a>
+      <a href="#name"><span class="white-text name">Ejemplo SIG</span></a>
+      <a href="#email"><span class="white-text email">Ejemplo_SIG@gmail.com</span></a>
+    </div></li>
+    <li id="alcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por Alcaldias</a></li>
+    <li id="valcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por delito</a></li>
+    <li id="delitos_pgj"><a href="#!"><i class="material-icons">cloud</i>Filtrar por tipo de arma</a></li>
+    <li id="metrobus"><a href="#!"><i class="material-icons">cloud</i>Filtrar por fecha</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader">Subheader</a></li>
+    <li><a class="waves-effect" href="#!">Delitos del fuero común</a></li>
+  </ul>
+        
+  
+  <div id="contenedor">
+    <div class="progress" id="progress">
+      <div class="indeterminate" id='progress2'></div>
+    </div>
+    <div id="map"></div>
+  </div>
+
+  <!-- Evento para filtros --> 
+  <script>
+    document.getElementById('filtro').onclick=() => {
+      let elems = document.querySelectorAll('.sidenav');
+      let instances = M.Sidenav.init(elems, edge='left');
+    };
+  </script>
+</body>
+<!--FontAwesome
+<script defer src="js/lib/all.js" integrity="sha384-qD/MNBVMm3hVYCbRTSOW130+CWeRIKbpot9/gR1BHkd7sIct4QKhT1hOPd+2hO8K" crossorigin="anonymous"></script>
+-->
+<script src="node_modules/leaflet/dist/leaflet.js"></script>
+<script src="node_modules/leaflet/dist/leaflet-src.js"></script>
+<script src="node_modules/leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js"></script>
+<script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+<script src="node_modules/leaflet-wfst/dist/leaflet-wfst.src.js"></script>
+
+<!--JQuery-->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<!-- Index --> 
+<script src="js/index.js"></script>
+<!-- Materialize JS --> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
+<!--<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>-->
+<!--<script src="Leaflet.markercluster-1.4.1/dist/leaflet.markercluster-src.js"></script>-->
+<!--<script src="Leaflet-WFST-master/src/WFS.js"></script>-->
+</html>
