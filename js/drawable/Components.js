@@ -24,17 +24,14 @@ const wikimedia = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r
 	maxZoom: 19
 });
 
-/**
- * POLÍGONOS
- */
-
+/*+++++++++++POLÍGONOS+++++++++++*/
 /**
  * Genera el polígono de las alcaldias.
  */
-let cql = "nomgeo='Tláhuac'";
-export const pAlcaldias = L.tileLayer.wms("http://localhost:8080/geoserver/gwc/service/wms?Tiled=True&", {
+export let cql = "nomgeo LIKE '%'";
+export let pAlcaldias = L.tileLayer.wms("http://localhost:8080/geoserver/pruebas/wms?Tiled=True&", {
 	layers: 'pruebas:mapa_alcaldias',
-	format: 'image/png',
+	format: 'image/png8',
 	opacity: 0.5,
 	crossOrigin: 'anonymous', 
 	transparent: true,
@@ -42,7 +39,7 @@ export const pAlcaldias = L.tileLayer.wms("http://localhost:8080/geoserver/gwc/s
 });
 
 let layerGroup = L.layerGroup({
-	'Alcaldias':pAlcaldias
+	'Alcaldias': pAlcaldias
 });
 
 /**
@@ -51,23 +48,23 @@ let layerGroup = L.layerGroup({
 export const map = L.map('map',{
 	center: [19.2998164,-99.1807436],
 	zoom: 8,
-	layers: [capa1,layerGroup]
+	layers: [capa1]
 });
 
 
-let baseMaps = {
+export let baseMaps = {
 	'Hidro':capa1,
 	'OSM':capa2
 };
 
-let overlayMaps = {
-    "Alcaldías": pAlcaldias
+export let overlayMaps = {
+    "Alcaldías": pAlcaldias.addTo(map)
 };
 
 /**
  * Controles del mapa
  */
-let layercontrol = L.control.layers(baseMaps, overlayMaps, {
+export let layercontrol = L.control.layers(baseMaps, overlayMaps, {
 	position: "topright"
 }).addTo(map);
 

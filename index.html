@@ -33,31 +33,103 @@
       <a id="filtro" href="#" class="brand-logo left">
           <i data-target="slide-out" class="material-icons sidenav-trigger">apps</i>
       </a>
-      
       <a class="brand-logo center">
           <i class="material-icons">dashboard</i>
       </a>
-      
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <ul id="nav-mobile" class="brand-logo right hide-on-med-and-down">
         <li class="active"><a href="#">SIG</a></li>
         <li class="active"><a id="bAbout" href="#">Acerca de</a></li>
       </ul>
     </div>
   </nav>
 
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+
   <ul id="slide-out" class="sidenav">
-    <li><div class="user-view">
-      <div class="background">
-        <img src="assets/office.jpg">
+    <li>
+      <div class="user-view">
+        <div class="background">
+          <img src="assets/office.jpg">
+        </div>
+        <a href="#user"><img class="circle" src="assets/yuna.jpg"></a>
+        <a href="#name"><span class="white-text name">Ejemplo SIG</span></a>
+        <a href="#email"><span class="white-text email">Ejemplo_SIG@gmail.com</span></a>
       </div>
-      <a href="#user"><img class="circle" src="assets/yuna.jpg"></a>
-      <a href="#name"><span class="white-text name">Ejemplo SIG</span></a>
-      <a href="#email"><span class="white-text email">Ejemplo_SIG@gmail.com</span></a>
-    </div></li>
-    <li id="alcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por Alcaldias</a></li>
+    </li>
+      <ul class="collapsible popout">
+        
+        <li>
+          <div class="collapsible-header waves-effect"><i class="material-icons">filter_drama</i>Tipo de delito</div>
+          <div class="collapsible-body center">
+            <div class="center">
+              <div id="filtroA">
+                <label>
+                  <input class="TipoDelito" type="checkbox" value="Magdalena Contreras">
+                  <span style="color: black;">Magdalena Contreras</span>
+                </label><br>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header"><i class="material-icons">place</i>Alcaldia</div>
+          <div class="collapsible-body">
+            <div class="center">
+              <div id="filtroA">
+                <label>
+                  <input class="Alcaldia" type="checkbox" value="La Magdalena Contreras"/>
+                  <span style="color: black;">La Magdalena Contreras</span>
+                </label><br>
+                <label>
+                    <input class="Alcaldia" type="checkbox" value="Álvaro Obregón"/>
+                    <span style="color: black;">Álvaro Obregón</span>
+                  </label><br>
+                  <label>
+                      <input class="Alcaldia" type="checkbox" value="Iztapalapa"/>
+                      <span style="color: black;">Iztapalapa</span>
+                    </label><br>
+                    <label>
+                    <input class="Alcaldia" type="checkbox" value="Tláhuac"/>
+                    <span style="color: black;">Tláhuac</span>
+                  </label><br>
+                  <a class="waves-effect waves-light btn-small" id='clear_filtroA_b'>
+                      <i class="material-icons right">cloud</i>
+                      Limpiar
+                  </a>
+                  <a class="waves-effect waves-light btn-small" id='send_filtroA_b'>
+                    <i class="material-icons right">cloud</i>
+                    Aplicar
+                  </a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="collapsible-header"><i class="material-icons">whatshot</i>Tipo de Arma</div>
+          <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+        </li>
+        <li>
+          <div id ="dateFilter_b" class="collapsible-header"><i class="material-icons">whatshot</i>Fecha</div>
+          <div class="collapsible-body">
+            <!--<input type="text" class="datepicker">-->
+          </div>
+        </li>
+      </ul>  
+    <!--
+      <li id="alcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por Alcaldias</a></li>
     <li id="valcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por delito</a></li>
     <li id="delitos_pgj"><a href="#!"><i class="material-icons">cloud</i>Filtrar por tipo de arma</a></li>
     <li id="metrobus"><a href="#!"><i class="material-icons">cloud</i>Filtrar por fecha</a></li>
+    -->
     <li><div class="divider"></div></li>
     <li><a class="subheader">Subheader</a></li>
     <li><a class="waves-effect" href="#!">Delitos del fuero común</a></li>
@@ -87,6 +159,7 @@
 <script src="node_modules/leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js"></script>
 <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 <script src="node_modules/leaflet-wfst/dist/leaflet-wfst.src.js"></script>
+
 
 <!--JQuery-->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

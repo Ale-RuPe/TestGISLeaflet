@@ -1,5 +1,5 @@
 #contenedor {
-    position: absolute;
+    position: fixed; /*Cambié esto de absolute*/
     width: 100%;
     height: 90%;
     border: 100px;
@@ -9,4 +9,15 @@
     width: 100%;
     height: 100%;
     border: 100px;
+}
+.sidenav{
+    z-index: 100; 
+    position: fixed;
+}
+#slide-out{
+    
+}
+
+#filtroA{
+    margin-left: 1%;
 }

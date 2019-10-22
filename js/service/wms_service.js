@@ -16,14 +16,13 @@ export const getGeoJSON = (url, callback) => {
     });
 };
 
-export const servicioES6 = (url,callback) => {
+export const getGeoJSONES6 = (url,callback) => {
     fetch(url)
-    .then( (response) => {
+    .then( response => {
         return callback(true, response.json());
     })
-    .catch( (error) => {
+    .catch( error => {
         console.error('Error:', error)
-        return callback(false,error);
+        return callback(false, error);
     })
 };
-  
