@@ -19,5 +19,18 @@
 }
 
 #filtroA{
-    margin-left: 1%;
+  display: flex;
+  justify-content: left;
+  margin-left: 15%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  
+}
+.cuerpoFiltro{
+    
+}
+.modal{
+    bottom: 10%;
+    align-self:stretch;
+    display: flexbox
 }

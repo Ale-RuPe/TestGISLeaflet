@@ -27,9 +27,9 @@
 </head>
 
 <body>
+  <!-- Barra de Navegación -->
   <nav id="barrita">
     <div class="nav-wrapper grey darken-4">
-      
       <a id="filtro" href="#" class="brand-logo left">
           <i data-target="slide-out" class="material-icons sidenav-trigger">apps</i>
       </a>
@@ -43,17 +43,19 @@
     </div>
   </nav>
 
-  <!-- Modal Structure -->
+  <!-- Modal para el rango de fechas -->
   <div id="modal1" class="modal">
     <div class="modal-content">
       <h4>Modal Header</h4>
       <p>A bunch of text</p>
+      <input type="text" class="datepicker">
     </div>
     <div class="modal-footer">
       <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
     </div>
   </div>
 
+  <!-- Barra lateral con los filtros -->
   <ul id="slide-out" class="sidenav">
     <li>
       <div class="user-view">
@@ -65,65 +67,72 @@
         <a href="#email"><span class="white-text email">Ejemplo_SIG@gmail.com</span></a>
       </div>
     </li>
-      <ul class="collapsible popout">
-        
-        <li>
-          <div class="collapsible-header waves-effect"><i class="material-icons">filter_drama</i>Tipo de delito</div>
-          <div class="collapsible-body center">
-            <div class="center">
-              <div id="filtroA">
-                <label>
-                  <input class="TipoDelito" type="checkbox" value="Magdalena Contreras">
-                  <span style="color: black;">Magdalena Contreras</span>
-                </label><br>
-              </div>
+
+    <ul class="collapsible ">
+      <li>
+        <div class="collapsible-header waves-effect"><i class="material-icons">sports_kabaddi</i>Tipo de delito</div>
+        <div class="collapsible-body center">
+          <div class="center">
+            <div id="filtroA">
+              <label>
+                <input class="TipoDelito" type="checkbox" value="Magdalena Contreras">
+                <span style="color: black;">Magdalena Contreras</span>
+              </label><br>
             </div>
           </div>
-        </li>
-        <li>
-          <div class="collapsible-header"><i class="material-icons">place</i>Alcaldia</div>
-          <div class="collapsible-body">
-            <div class="center">
-              <div id="filtroA">
-                <label>
-                  <input class="Alcaldia" type="checkbox" value="La Magdalena Contreras"/>
-                  <span style="color: black;">La Magdalena Contreras</span>
-                </label><br>
-                <label>
-                    <input class="Alcaldia" type="checkbox" value="Álvaro Obregón"/>
-                    <span style="color: black;">Álvaro Obregón</span>
-                  </label><br>
-                  <label>
-                      <input class="Alcaldia" type="checkbox" value="Iztapalapa"/>
-                      <span style="color: black;">Iztapalapa</span>
-                    </label><br>
-                    <label>
-                    <input class="Alcaldia" type="checkbox" value="Tláhuac"/>
-                    <span style="color: black;">Tláhuac</span>
-                  </label><br>
-                  <a class="waves-effect waves-light btn-small" id='clear_filtroA_b'>
-                      <i class="material-icons right">cloud</i>
-                      Limpiar
-                  </a>
-                  <a class="waves-effect waves-light btn-small" id='send_filtroA_b'>
-                    <i class="material-icons right">cloud</i>
-                    Aplicar
-                  </a>
+        </div>
+      </li>
+
+      <li>
+        <div class="collapsible-header waves-effect"><i class="material-icons">location_searching</i>Ubicación (Alcaldia)</div>
+        <div class="collapsible-body">
+          <div class="cuerpoFiltro">
+            
+              <label id="filtroA">
+                <input class="Alcaldia" type="checkbox" value="La Magdalena Contreras"/>
+                <span style="color: black;">La Magdalena Contreras</span>
+                <br>
+              </label>
+              <label id="filtroA">
+                <input class="Alcaldia" type="checkbox" value="Álvaro Obregón"/>
+                <span style="color: black;">Álvaro Obregón</span>
+                <br>
+              </label>
+              <label id="filtroA">
+                <input class="Alcaldia" type="checkbox" value="Iztapalapa"/>
+                <span style="color: black;">Iztapalapa</span>
+                <br>
+              </label>
+              <label id="filtroA">
+                <input class="Alcaldia" type="checkbox" value="Tláhuac"/>
+                <span style="color: black;">Tláhuac</span>
+                <br>
+              </label>
+              <div class="center">
+                <a class="waves-effect waves-light btn-small" id='clear_filtroA_b'>
+                    <i class="material-icons right">delete_forever</i>
+                    Limpiar
+                </a>
+                <a class="waves-effect waves-light btn-small" id='send_filtroA_b'>
+                  <i class="material-icons right">send</i>
+                  Aplicar
+                </a>
               </div>
-            </div>
           </div>
-        </li>
-        <li>
-          <div class="collapsible-header"><i class="material-icons">whatshot</i>Tipo de Arma</div>
-          <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-        </li>
-        <li>
-          <div id ="dateFilter_b" class="collapsible-header"><i class="material-icons">whatshot</i>Fecha</div>
-          <div class="collapsible-body">
-            <!--<input type="text" class="datepicker">-->
-          </div>
-        </li>
-      </ul>  
+        </div>
+      </li>
+
+      <li>
+        <div class="collapsible-header"><i class="material-icons">category</i>Tipo de Arma</div>
+        <div class="collapsible-body"><span>Aquí van los tipos de Arma</span></div>
+      </li>
+
+      <li>
+        <div id ="dateFilter_b" class="collapsible-header"><i class="material-icons">date_range</i>Fecha</div>
+        <div class="collapsible-body">
+        </div>
+      </li>
+    </ul>  
     <!--
       <li id="alcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por Alcaldias</a></li>
     <li id="valcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por delito</a></li>
@@ -160,17 +169,10 @@
 <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 <script src="node_modules/leaflet-wfst/dist/leaflet-wfst.src.js"></script>
 
-
 <!--JQuery-->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <!-- Index --> 
 <script src="js/index.js"></script>
 <!-- Materialize JS --> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-
-<!--<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>-->
-<!--<script src="Leaflet.markercluster-1.4.1/dist/leaflet.markercluster-src.js"></script>-->
-<!--<script src="Leaflet-WFST-master/src/WFS.js"></script>-->
 </html>

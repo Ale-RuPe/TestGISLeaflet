@@ -13,3 +13,12 @@ markers.greenMarker = L.ExtraMarkers.icon({
     shape: 'square',
     prefix: 'fa'
 });
+
+export const getFromFeature = (feature) => {
+    switch (feature) {
+        case 'robo':
+            return require('../../assets/leaf-red.png');
+        default:
+            return require('../../assets/leaf-green.png');
+    }
+};

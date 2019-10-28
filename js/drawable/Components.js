@@ -1,3 +1,6 @@
+import * as F from '../functions';
+import * as Markers from '../drawable/Markers';
+
 /**
  * Diferentes estilos de Mapas
  */
@@ -29,13 +32,23 @@ const wikimedia = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r
  * Genera el polígono de las alcaldias.
  */
 export let cql = "nomgeo LIKE '%'";
-export let pAlcaldias = L.tileLayer.wms("http://localhost:8080/geoserver/pruebas/wms?Tiled=True&", {
+export let pAlcaldias = L.tileLayer.wms("http://"+F.urlGeoserver+"/geoserver/pruebas/wms?Tiled=True&", {
 	layers: 'pruebas:mapa_alcaldias',
 	format: 'image/png8',
-	opacity: 0.5,
+	opacity: 0.4,
 	crossOrigin: 'anonymous', 
 	transparent: true,
 	cql_filter: cql
+});
+
+export let pFiltroAlcaldias = L.tileLayer.wms("http://"+F.urlGeoserver+"/geoserver/pruebas/wms?Tiled=True&", {
+	layers: 'pruebas:mapa_alcaldias',
+	format: 'image/png8',
+	opacity: 0,
+	crossOrigin: 'anonymous', 
+	transparent: true,
+	cql_filter: '',
+	styles: 'pruebas:FiltroAlcaldias'
 });
 
 let layerGroup = L.layerGroup({
@@ -57,8 +70,21 @@ export let baseMaps = {
 	'OSM':capa2
 };
 
+let icono = L.icon({
+	iconUrl: Markers.getFromFeature('robo'),
+	iconSize:     [38, 35], // size of the icon
+	shadowSize:   [50, 64], // size of the shadow
+	iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+	shadowAnchor: [4, 62],  // the same for the shadow
+	popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+})
+let marcador = L.marker([19.2998164,-99.1807436],{icon: icono});
+
+
+
 export let overlayMaps = {
-    "Alcaldías": pAlcaldias.addTo(map)
+	"Alcaldías": pAlcaldias.addTo(map),
+	'Marker': marcador
 };
 
 /**
@@ -67,6 +93,7 @@ export let overlayMaps = {
 export let layercontrol = L.control.layers(baseMaps, overlayMaps, {
 	position: "topright"
 }).addTo(map);
+
 
 
 //let latlng = L.latLng(39.924, 116.463); //coordenadas de CDMX

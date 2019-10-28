@@ -16,7 +16,7 @@ export const getGeoJSON = (url, callback) => {
     });
 };
 
-export const getGeoJSONES6 = (url,callback) => {
+const getGeoJSONES6 = (url,callback) => {
     fetch(url)
     .then( response => {
         return callback(true, response.json());
