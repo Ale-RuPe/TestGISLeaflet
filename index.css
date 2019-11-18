@@ -29,8 +29,34 @@
 .cuerpoFiltro{
     
 }
+
 .modal{
-    bottom: 10%;
     align-self:stretch;
     display: flexbox
 }
+
+
+.datepicker-modal {
+    align-self:stretch !important;
+    display: flexbox !important;
+    transform: scale(0.7) !important;
+    width: 100% !important;
+    top: -15% !important;
+}
+.headerFiltro{
+    left: -10% !important;
+}
+.dateRange{
+    color: #000000 !important;
+    padding-left: 15% !important;
+}
+
+
+
+
+.leaflet-popup-content {
+    max-width: 90% !important;
+    max-height: 300px;
+    overflow: auto;
+}
+

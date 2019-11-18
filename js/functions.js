@@ -1,16 +1,26 @@
 import * as C from './drawable/Components';
 import * as Service from './service/wms_service';
 import {markers as Markers} from './drawable/Markers';
+import {getFromFeature as getCrimeIcon} from './drawable/Markers';
 
+let clearFA = false;
 /**
  * Parametros para la obtencion de los datos de Geoserver
  */
-export const urlGeoserver = '127.0.0.1:8080';
-export const maxFeaturesGS = 100;
+export const urlGeoserver = '192.168.43.203:8080';//'10.100.79.52:8080'; //:1234 en otros dispositivos 
+export const pathGeoServer ="/geoserver/cic_ipn/";
+export const capaAlcaldiasGeoServer = 'cic_ipn:alcaldias';
+export const capaDelitosGeoServer = "cic_ipn:InfoDelitos";
+export const maxFeaturesGS = 9873;
+
 let cql_filter_A = '';
 let cql_filter_A_d = "nomgeo LIKE '%'";
 let cql_filter_PGJ = "";
-let cql_filter_PGJ_d = "alcaldia_h LIKE '%'";
+let cql_filter_PGJ_d = "nombreAlcaldia ILIKE '%'";
+
+let cql_filter_Rango = '';
+let cql_filter_Tipo = '';
+let cql_filter_Arma = '';
 
 
 /**
@@ -18,9 +28,8 @@ let cql_filter_PGJ_d = "alcaldia_h LIKE '%'";
  */
 export let clusterMarkers = L.markerClusterGroup({
     removeOutsideVisibleBounds: true,
-    spiderfyOnMaxZoom: false,
-    chunkedLoading: true,
-    disableClusteringAtZoom:19
+    spiderfyOnMaxZoom: true,
+    chunkedLoading: true
 });
 
 /**
@@ -29,17 +38,31 @@ export let clusterMarkers = L.markerClusterGroup({
  * @param {Código EPSG} epsg 
  */
 export const loadWFS = (cql_fil,layerName, epsg) => {
-    let urlString = "http://"+urlGeoserver+"/geoserver/pruebas/ows";
-    let param = {
-        service: 'WFS',
-        version: '1.1.0',
-        request: 'GetFeature',
-        typeName: layerName,
-        outputFormat: 'application/json',
-        maxFeatures: maxFeaturesGS,
-        srsName: epsg,
-        cql_filter: cql_fil
-    };
+    let urlString = "http://"+urlGeoserver+pathGeoServer+'ows';
+    let param;
+    if(cql_fil.length==0){
+        param = {
+            service: 'WFS',
+            version: '1.1.0',
+            request: 'GetFeature',
+            typeName: layerName,
+            outputFormat: 'application/json',
+            maxFeatures: maxFeaturesGS,
+            srsName: epsg
+        };
+    }
+    else{
+        param = {
+            service: 'WFS',
+            version: '1.1.0',
+            request: 'GetFeature',
+            typeName: layerName,
+            outputFormat: 'application/json',
+            maxFeatures: maxFeaturesGS,
+            srsName: epsg,
+            cql_filter: cql_fil
+        };
+    }
 
     let u = urlString + L.Util.getParamString(param, urlString);
     console.log(u);
@@ -53,17 +76,62 @@ export const loadWFS = (cql_fil,layerName, epsg) => {
  * @param {Marcadores} markers  
  */
 export const loadMarkers = (data, clusterMarkers, markers) =>{
+    let id =0;
     L.geoJson(data, {
         onEachFeature: (feature) => {
-            let title = feature.properties.delito;
+            let tipoDelito = feature.properties.delito;
+            let fecha = feature.properties.fecha;
+            if(fecha)
+                fecha = fecha.slice(0, -1);
+
+            let arma = '';
+            if(tipoDelito.includes('ARMA DE FUEGO')){
+                tipoDelito.replace('ARMA DE FUEGO', ' ');
+                arma = "ARMA DE FUEGO";
+            }else if(tipoDelito.includes('ARMA BLANCA')){
+                tipoDelito.replace('ARMA BLANCA', ' ');
+                arma = "ARMA BLANCA";
+            }
+            
+            let colonia = feature.properties.nombreCol;
+            let calle1 = feature.properties.calle1;
+            let calle2 = feature.properties.calle2;
+            let alcaldia = feature.properties.nombreAlcaldia;
+            let origen = feature.properties.origen==true ? "Fuente oficial" : "Twitter";
+            let latitud = feature.properties.latitud;
+            let longitud = feature.properties.longitud;
+            
+            let customIcon = L.icon({
+                iconUrl: getCrimeIcon(tipoDelito),
+                iconSize:     [35, 38], // size of the icon
+                //shadowSize:   [50, 64], // size of the shadow
+                iconAnchor:   [12,42], // point of the icon which will correspond to marker's location
+                //shadowAnchor: [4, 62],  // the same for the shadow
+                popupAnchor:  [5, -26] // point from which the popup should open relative to the iconAnchor
+            });
+
             let marker;
-            if(feature.properties.alcaldia_h=='TLAHUAC'){
-                marker = L.marker([feature.properties.latitud, feature.properties.longitud], {icon: markers.redMarker})
-            }
-            else{
-                marker = L.marker([feature.properties.latitud, feature.properties.longitud], {icon: markers.greenMarker})
-            }
-            marker.bindPopup(title);
+            marker = L.marker([latitud,longitud],{icon: customIcon});//, {icon: markers.redMarker})
+            
+            let tabla = "<table id='"+id+"' class='hide' style='width:100%'>"+
+            "<thead><tr><th>Tipo de delito</th><th>Arma</th><th>Fecha</th>"+
+            "<th>Colonia</th>"+"<th>Calle1</th>"+"<th>Calle2</th>"+
+            "<th>Alcaldia</th>"+"<th>Origen</th>"+
+            "<th>Latitud</th>"+"<th>Longitud</th>"+"</tr></thead>"+
+            "<tbody><tr><td>"+tipoDelito+"</td>"+"<td>"+arma+"</td>"+
+            "<td>"+fecha+"</td>"+
+            "<td>"+colonia+"</td>"+"<td>"+calle1+"</td>"+"<td>"+calle2+"</td>"+
+            "<td>"+alcaldia+"</td>"+"<td>"+origen+"</td>"+
+            "<td>"+latitud+"</td>"+"<td>"+longitud+"</td>"+
+            "</tr></tbody></table>"+
+            
+            "<table><tr><td>Tipo de delito</td><td>"+tipoDelito+"</td></tr>"+
+            "<td>Fecha</td><td>"+fecha+"</td></tr>"+
+            "<td>Origen</td><td>"+origen+"</td></tr>"+
+            "</table><a href='#' onclick='toDataTables("+id+")'>Más información</a>";
+
+            id = id+1;
+            marker.bindPopup(tabla);
             clusterMarkers.addLayer(marker);
         }
     });
@@ -73,9 +141,12 @@ export const loadMarkers = (data, clusterMarkers, markers) =>{
  * Inicializa el Cluster
  */
 export const initCluster = () =>{
-    let cql = "alcaldia_h LIKE '%'";
-    let url = loadWFS(cql, "pruebas:carpeta_invest_pgj_cdmx", "EPSG:4326");
+    //let cql = "alcaldia_h LIKE '%'";
+    let url = loadWFS('', capaDelitosGeoServer, "EPSG:4326");
     paintCluster(url);
+    //repaintWMSAlcaldias('');
+    document.getElementById("progress").style.display = 'none';
+    document.getElementById("progress2").style.display = 'none';
 }
 
 /**
@@ -101,11 +172,10 @@ export const updateCluster = (cql) =>{
     C.map.removeLayer(clusterMarkers);
     clusterMarkers = L.markerClusterGroup({
         removeOutsideVisibleBounds: true,
-        spiderfyOnMaxZoom: false,
-        chunkedLoading: true,
-        disableClusteringAtZoom:19
+        spiderfyOnMaxZoom: true,
+        chunkedLoading: true
     });
-    let url = loadWFS(cql, "pruebas:carpeta_invest_pgj_cdmx", "EPSG:4326");
+    let url = loadWFS(cql, capaDelitosGeoServer, "EPSG:4326");
     paintCluster(url);
 };
 
@@ -114,23 +184,28 @@ export const updateCluster = (cql) =>{
  * @param {Filtro CQL} cql 
  */
 const repaintWMSAlcaldias = (cql) =>{
-    if(cql.length ==0){
+    if(cql.length == 0){
         cql = "nomgeo LIKE '%'";
+        if(C.map.hasLayer(C.pFiltroAlcaldias)){
+            C.map.removeLayer(C.pFiltroAlcaldias);
+        }
+    }else{
+        if(C.map.hasLayer(C.pFiltroAlcaldias)){
+            C.map.removeLayer(C.pFiltroAlcaldias);
+        }
+        console.log("pintar:"+cql);
+        C.pFiltroAlcaldias = L.tileLayer.wms("http://"+urlGeoserver+pathGeoServer+"wms?Tiled=True&", {
+            layers: capaAlcaldiasGeoServer,
+            format: 'image/png8',
+            opacity: 0.6,
+            crossOrigin: 'anonymous', 
+            transparent: true,
+            cql_filter: cql,
+            styles: 'cic_ipn:FiltroAlcaldias'
+        });
+        C.map.setZoom(9);
+        C.map.addLayer(C.pFiltroAlcaldias);
     }
-    if(C.map.hasLayer(C.pFiltroAlcaldias)){
-        C.map.removeLayer(C.pFiltroAlcaldias);
-    }
-    console.log("pintar:"+cql);
-    C.pFiltroAlcaldias = L.tileLayer.wms("http://"+urlGeoserver+"/geoserver/pruebas/wms?Tiled=True&", {
-        layers: 'pruebas:mapa_alcaldias',
-        format: 'image/png8',
-        opacity: 1,
-        crossOrigin: 'anonymous', 
-        transparent: true,
-        cql_filter: cql,
-        styles: 'pruebas:FiltroAlcaldias'
-    });
-    C.map.addLayer(C.pFiltroAlcaldias);
 };
 
 /**
@@ -153,17 +228,53 @@ const clearFilterA = () => {
 const selectAlcaldia = (alcaldia) =>{
     let filter = '';
     switch (alcaldia) {
-        case "La Magdalena Contreras":
-            filter = "LIKE 'LA%'";  
+        case "Tlalpan":
+            filter = "ILIKE '%TLAL%'";
             break;
-        case "Álvaro Obregón":
-            filter = "LIKE 'ALV%'";
+        case "Venustiano Carranza":
+            filter = "ILIKE '%VENUSTI%'";
+            break;
+        case "Azcapotzalco":
+            filter = "ILIKE '%AZCAPO%'";
             break;
         case "Iztapalapa":
-            filter = "LIKE 'IZT%'";
+            filter = "ILIKE '%IZTAPA%'";
+            break;
+        case "Iztacalco":
+            filter = "ILIKE '%IZTACA%'";
+            break;
+        case "Miguel Hidalgo":
+            filter = "ILIKE '%MIGUEL%'";
+            break;
+        case "La Magdalena Contreras":
+            filter = "ILIKE '%LA%'";  
+            break;
+        case "Coyoacán":
+            filter = "ILIKE '%COYOA%'";
+            break;
+        case "Milpa Alta":
+            filter = "ILIKE '%MILPA%'";
             break;
         case "Tláhuac":
-            filter = "LIKE 'TLAH%'";
+            filter = "ILIKE '%Tlá%'";
+            break;
+        case "Benito Juárez":
+            filter = "ILIKE '%BENI%'";
+            break;
+        case "Cuajimalpa de Morelos":
+            filter = "ILIKE '%CUAJIM%'";
+            break;
+        case "Gustavo A. Madero":
+            filter = "ILIKE '%GUSTAVO%'";
+            break;
+        case "Cuauhtémoc":
+            filter = "ILIKE '%CUAUHT%'";
+            break;
+        case "Álvaro Obregón":
+            filter = "ILIKE '%Álva%'";
+            break;
+        case "Xochimilco":
+            filter = "LIKE 'XOCH%'";
             break;
         default:
             filter = "LIKE '%'";
@@ -172,62 +283,190 @@ const selectAlcaldia = (alcaldia) =>{
     return filter;
 };
 
-
+const selectArma=(value)=>{
+    switch (value) {
+        case 'Arma blanca':
+            return "ILIKE '%ARMA BLANCA%'"
+        case 'Arma de fuego':
+            return "ILIKE '%ARMA DE FUEGO%'"
+        case 'Sin arma':
+            return "NOT ILIKE '%ARMA%'"
+    }
+};
 /**
  * Prepara el fltrado por alcaldias
  */
 const applyFilterA = () => {
     cql_filter_A = '';
-    //Selecciona todos los elementos del filtro de Alcaldia
-    let divs = document.getElementsByClassName("Alcaldia");
+    if(clearFA){
+        let toastHTML = '<span>Se han eliminado los filtros</span><button class="btn-flat toast-action">OK</button>';
+        M.toast({html: toastHTML});
+        repaintWMSAlcaldias(cql_filter_A);
+        updateCluster(cql_filter_PGJ);
+    }else{
+        //Selecciona todos los elementos del filtro de Alcaldia
+        let divs = document.getElementsByClassName("Alcaldia");
 
-    //Recorre la lista de elementos seleccionados
-    for (let i=0; i < divs.length; i++) {
-        //console.log('Elemento '+i+' : '+ divs[i].checked+ ', '+ divs[i].getAttribute('value'));
-        if(divs[i].checked && cql_filter_A.length == 0){
-            cql_filter_A = "nomgeo='" + divs[i].getAttribute('value') + "' ";
-            cql_filter_PGJ = "alcaldia_h " + selectAlcaldia(divs[i].getAttribute('value')) + " ";
-        }else if(divs[i].checked){
-            cql_filter_A += " OR nomgeo='" + divs[i].getAttribute('value') + "' ";
-            cql_filter_PGJ += " OR alcaldia_h " + selectAlcaldia(divs[i].getAttribute('value')) + " ";
+        //Recorre la lista de elementos seleccionados
+        for (let i=0; i < divs.length; i++) {
+            //console.log('Elemento '+i+' : '+ divs[i].checked+ ', '+ divs[i].getAttribute('value'));
+            if(divs[i].checked && cql_filter_A.length == 0){
+                cql_filter_A = "nomgeo='" + divs[i].getAttribute('value') + "' ";
+                cql_filter_PGJ = "nombreAlcaldia " + selectAlcaldia(divs[i].getAttribute('value')) + " ";
+            }else if(divs[i].checked){
+                cql_filter_A += " OR nomgeo='" + divs[i].getAttribute('value') + "' ";
+                cql_filter_PGJ += " OR nombreAlcaldia " + selectAlcaldia(divs[i].getAttribute('value')) + " ";
+            }
+            /*
+            divs[i].addEventListener("click",function() {
+                //Aquí la función que se ejecutará cuando se dispare el evento
+                alert(this.innerHTML); //En este caso alertaremos el texto del cliqueado
+            });
+            */
         }
-        /*
-        divs[i].addEventListener("click",function() {
-            //Aquí la función que se ejecutará cuando se dispare el evento
-            alert(this.innerHTML); //En este caso alertaremos el texto del cliqueado
-        });
-        */
-    }
-    if(cql_filter_A.length==0 || cql_filter_PGJ.length==0){
-        console.log('no filter');
-        repaintWMSAlcaldias(cql_filter_A_d);
-        updateCluster(cql_filter_PGJ_d);
-    }
-    console.log("filtro=|"+cql_filter_A+"|");
-    console.log("filtro=|"+cql_filter_PGJ+"|");
+        //let sideNavInstance = M.Sidenav.getInstance($('.sidenav'));
+        if(cql_filter_A.length==0 || cql_filter_PGJ.length==0){
+            console.log("Sin filtro: Selecciona un Filtro");
+            console.log(cql_filter_A);    
 
-    repaintWMSAlcaldias(cql_filter_A);
-    updateCluster(cql_filter_PGJ);
+            let toastHTML = '<span>No hay filtros seleccionados</span><button class="btn-flat toast-action">OK</button>';
+            M.toast({html: toastHTML});
+            //repaintWMSAlcaldias(cql_filter_A_d);
+            //updateCluster(cql_filter_PGJ_d);
+        }else{
+            let toastHTML = '<span>Los filtros han sido aplicados</span><button class="btn-flat toast-action">OK</button>';
+            M.toast({html: toastHTML});
+            //sideNavInstance.close();
+            console.log("filtro=|"+cql_filter_A+"|");
+            console.log("filtro=|"+cql_filter_PGJ+"|");
+            repaintWMSAlcaldias(cql_filter_A);
+            updateCluster(cql_filter_PGJ);
+        }
+    }
 };
 
 
+const applyFilterTipo = (divs) =>{
+    cql_filter_Tipo ="";
+    //Recorre la lista de divs seleccionados
+    for (let i=0; i < divs.length; i++) {
+        if(divs[i].checked && cql_filter_Tipo.length == 0){
+            cql_filter_Tipo = "delito ILIKE '%" + divs[i].getAttribute('value') + "%' ";
+        }else if(divs[i].checked){
+            cql_filter_Tipo += " OR delito ILIKE '%" + divs[i].getAttribute('value') + "%' ";
+        }
+    }
+    console.log(cql_filter_Tipo);
+    if(cql_filter_Tipo.length==0){
+        let toastHTML = '<span>No hay filtros seleccionados</span><button class="btn-flat toast-action">OK</button>';
+        M.toast({html: toastHTML});
+    }else{
+        let toastHTML = '<span>Los filtros han sido aplicados</span><button class="btn-flat toast-action">OK</button>';
+        M.toast({html: toastHTML});
+        repaintWMSAlcaldias("");
+        updateCluster(cql_filter_Tipo);
+    }
+};
 
+
+const applyFilterArmas = (divs) =>{
+    cql_filter_Tipo ="";
+    //Recorre la lista de divs seleccionados
+    for (let i=0; i < divs.length; i++) {
+        if(divs[i].checked && cql_filter_Tipo.length == 0){
+            cql_filter_Tipo = "delito " + selectArma(divs[i].getAttribute('value')) + " ";
+        }else if(divs[i].checked){
+            cql_filter_Tipo += " OR delito " + selectArma(divs[i].getAttribute('value')) + " ";
+        }
+    }
+    console.log(cql_filter_Tipo);
+    if(cql_filter_Tipo.length==0){
+        let toastHTML = '<span>No hay filtros seleccionados</span><button class="btn-flat toast-action">OK</button>';
+        M.toast({html: toastHTML});
+    }else{
+        let toastHTML = '<span>Los filtros han sido aplicados</span><button class="btn-flat toast-action">OK</button>';
+        M.toast({html: toastHTML});
+        repaintWMSAlcaldias("");
+        updateCluster(cql_filter_Tipo);
+    }
+};
+
+/**
+ * Aplica el filtro de fechas
+ */
+const applyDateFilter = (dateRange) => {
+    let toastHTML = '<span>Se ha aplicado el filtro</span><button class="btn-flat toast-action">OK</button>';
+    M.toast({html: toastHTML});
+   
+    repaintWMSAlcaldias('');
+    updateCluster(dateRange);
+};
+
+
+/**
+ * Funciones de preparacion de elementos
+ */
 let applyfilterAlcaldias = document.getElementById('send_filtroA_b').onclick = () => {
     applyFilterA();
 };
 let clearfilterAlcaldias = document.getElementById('clear_filtroA_b').onclick = () => {
+    clearFA = true;
     clearFilterA();
 };
 
-/**
- * Prepara el modal (COMPONENTS)
- */
-document.getElementById('dateFilter_b').onclick = () =>{
-    $('#modal1').modal('open');
-}
+document.getElementById('btnFiltroFechas').onclick = ()=>{
+    //let fechaIn = M.Datepicker.getInstance();
+    let fechaIni = $('#fechaIni').val();
+    let fechaFin = $('#fechaFin').val();
+
+    if(fechaIni.length==0 || fechaFin.length==0 ){
+        console.log("Selecciona fechas");
+    }else{
+        console.log(fechaIni);
+        console.log(fechaFin);
+        cql_filter_Rango = "fecha BETWEEN '"+fechaIni+"%' AND '"+fechaFin+"%'";
+        applyDateFilter(cql_filter_Rango);
+        $('#modal1').modal('close');
+    }
+    
+};
+document.getElementById('btnClearFiltroFechas').onclick = () =>{
+    cql_filter_Rango = '';
+    $('#fechaIni').val('');
+    $('#fechaFin').val('');
+};
 
 
+document.getElementById('send_filtroTipoDelitos_b').onclick = () => {
+    cql_filter_Tipo = '';
+    //Selecciona todos los elementos del filtro de tipoDelitos
+    let elementos = document.getElementsByClassName("tipoDelitos");
+    applyFilterTipo(elementos);
+};
+document.getElementById('clear_filtroTipoDelitos_b').onclick = () => {    
+    let divs = document.getElementsByClassName("tipoDelitos");
+    for (let i=0; i < divs.length; i++) {
+        divs[i].checked = false;
+    }
+    cql_filter_Tipo = '';
+};
 
+
+document.getElementById('send_filtroArmas_b').onclick = () => {
+    cql_filter_Arma = '';
+    //Selecciona todos los elementos del filtro de tipoArmas
+    let elementos = document.getElementsByClassName("tipoArmas");
+    applyFilterArmas(elementos);
+};
+
+
+document.getElementById('clear_filtroArmas_b').onclick = () => {    
+    let divs = document.getElementsByClassName("tipoArmas");
+    for (let i=0; i < divs.length; i++) {
+        divs[i].checked = false;
+    }
+    cql_filter_Arma = '';
+};
 
 /*
 let zona_alcaldias = new Image({

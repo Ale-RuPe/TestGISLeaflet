@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="index.css">
   <!--<link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css"/>-->
+  <!--********* Leaflet ********-->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
   <link rel="stylesheet" href="node_modules/leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css">
   <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css">  
@@ -11,17 +12,29 @@
   
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.css"/>
+ 
+  
+
+  <!--
+  <script src='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.js'></script>
+  <link href='https://api.mapbox.com/mapbox.js/v3.2.1/mapbox.css' rel='stylesheet' />
+  -->
   <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />-->
   <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">-->
   <!--<link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.css">-->
   <!--<link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.Default.css">-->
 
-  <!--*********Materialize********-->
+  <!--********* Materialize ********-->
   <!--Import Google Icon Font-->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Materialize CSS -->
+  <!-- LOCAL -->
+  <link rel="stylesheet" href="css/lib/materialize.css">
+  <!-- CDN 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  -->
   <!--Let browser know website is optimized for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -33,105 +46,106 @@
       <a id="filtro" href="#" class="brand-logo left">
           <i data-target="slide-out" class="material-icons sidenav-trigger">apps</i>
       </a>
+      <!--
       <a class="brand-logo center">
-          <i class="material-icons">dashboard</i>
+        <div>
+            <img class="circle" src="assets/central.png">
+        </div>
       </a>
-      <ul id="nav-mobile" class="brand-logo right hide-on-med-and-down">
+      -->
+      <ul id="nav-mobile" class="brand-logo right">
         <li class="active"><a href="#">SIG</a></li>
-        <li class="active"><a id="bAbout" href="#">Acerca de</a></li>
+        <li class="active"><a id="bAbout" href="about.html">Acerca de</a></li>
       </ul>
     </div>
   </nav>
-
-  <!-- Modal para el rango de fechas -->
-  <div id="modal1" class="modal">
-    <div class="modal-content">
-      <h4>Modal Header</h4>
-      <p>A bunch of text</p>
-      <input type="text" class="datepicker">
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-    </div>
-  </div>
 
   <!-- Barra lateral con los filtros -->
   <ul id="slide-out" class="sidenav">
     <li>
       <div class="user-view">
         <div class="background">
-          <img src="assets/office.jpg">
+          <img src="assets/parallax1.jpg"><br>
         </div>
-        <a href="#user"><img class="circle" src="assets/yuna.jpg"></a>
-        <a href="#name"><span class="white-text name">Ejemplo SIG</span></a>
-        <a href="#email"><span class="white-text email">Ejemplo_SIG@gmail.com</span></a>
+        <a><img class="circle" src="assets/ipn.png">
+          <span class="white-text name"><h5>2018-B118</h5><br></span>
+        </a>
+        <!--<a href="#name"></a><span class="white-text name"><h5>SIG</h5></span></a>-->
+        <!--<a href="#email"><span class="white-text email">Ejemplo_SIG@gmail.com</span></a>-->
       </div>
     </li>
-
+    
     <ul class="collapsible ">
+        <li><a class="subheader">Filtrar por:</a></li>
+        <!--<li><a class="waves-effect" href="#!">Delitos del fuero común</a></li>-->
+        <li><div class="divider"></div></li>
       <li>
         <div class="collapsible-header waves-effect"><i class="material-icons">sports_kabaddi</i>Tipo de delito</div>
-        <div class="collapsible-body center">
+        <div class="collapsible-body">
+          <div class="cuerpoFiltroTipoDelito" id="cuerpoFiltroTipoDelito"></div>
+          
           <div class="center">
-            <div id="filtroA">
-              <label>
-                <input class="TipoDelito" type="checkbox" value="Magdalena Contreras">
-                <span style="color: black;">Magdalena Contreras</span>
-              </label><br>
-            </div>
+            <a class="waves-effect waves-light btn-small red darken-4" id='clear_filtroTipoDelitos_b'>
+              <i class="material-icons right">delete_forever</i>
+              Limpiar
+            </a>
+            <a class="waves-effect waves-light btn-small blue darken-2" id='send_filtroTipoDelitos_b'>
+              <i class="material-icons right">send</i>
+              Aplicar
+            </a>
           </div>
+
         </div>
       </li>
 
       <li>
         <div class="collapsible-header waves-effect"><i class="material-icons">location_searching</i>Ubicación (Alcaldia)</div>
         <div class="collapsible-body">
-          <div class="cuerpoFiltro">
+          <div class="cuerpoFiltroAl" id="cuerpoFiltroAl"></div>
             
-              <label id="filtroA">
-                <input class="Alcaldia" type="checkbox" value="La Magdalena Contreras"/>
-                <span style="color: black;">La Magdalena Contreras</span>
-                <br>
-              </label>
-              <label id="filtroA">
-                <input class="Alcaldia" type="checkbox" value="Álvaro Obregón"/>
-                <span style="color: black;">Álvaro Obregón</span>
-                <br>
-              </label>
-              <label id="filtroA">
-                <input class="Alcaldia" type="checkbox" value="Iztapalapa"/>
-                <span style="color: black;">Iztapalapa</span>
-                <br>
-              </label>
-              <label id="filtroA">
-                <input class="Alcaldia" type="checkbox" value="Tláhuac"/>
-                <span style="color: black;">Tláhuac</span>
-                <br>
-              </label>
-              <div class="center">
-                <a class="waves-effect waves-light btn-small" id='clear_filtroA_b'>
-                    <i class="material-icons right">delete_forever</i>
-                    Limpiar
-                </a>
-                <a class="waves-effect waves-light btn-small" id='send_filtroA_b'>
-                  <i class="material-icons right">send</i>
-                  Aplicar
-                </a>
-              </div>
+          <div class="center">
+            <a class="waves-effect waves-light btn-small red darken-4" id='clear_filtroA_b'>
+                <i class="material-icons right">delete_forever</i>
+                Limpiar
+            </a>
+            <a class="waves-effect waves-light btn-small blue darken-2" id='send_filtroA_b'>
+              <i class="material-icons right">send</i>
+              Aplicar
+            </a>
           </div>
+
         </div>
       </li>
 
       <li>
         <div class="collapsible-header"><i class="material-icons">category</i>Tipo de Arma</div>
-        <div class="collapsible-body"><span>Aquí van los tipos de Arma</span></div>
+        <div class="collapsible-body">
+            <div class="cuerpoFiltroTipoArma" id="cuerpoFiltroTipoArma"></div>
+            
+            <div class="center">
+              <a class="waves-effect waves-light btn-small red darken-4" id='clear_filtroArmas_b'>
+                  <i class="material-icons right">delete_forever</i>
+                  Limpiar
+              </a>
+              <a class="waves-effect waves-light btn-small blue darken-2" id='send_filtroArmas_b'>
+                <i class="material-icons right">send</i>
+                Aplicar
+              </a>
+            </div>
+        </div>
       </li>
 
       <li>
-        <div id ="dateFilter_b" class="collapsible-header"><i class="material-icons">date_range</i>Fecha</div>
+        <div class="collapsible-header"><i class="material-icons">date_range</i>Fecha</div>
         <div class="collapsible-body">
+              <div class="row">
+                  <div id="dateFilter_range" class="collection col s12 waves-effect">
+                    <a class="collection-item"><span class="dateRange">Rango de fechas</span></a>
+                  </div>
+              </div>
         </div>
       </li>
+
     </ul>  
     <!--
       <li id="alcaldias"><a href="#!"><i class="material-icons">cloud</i>Filtrar por Alcaldias</a></li>
@@ -139,9 +153,6 @@
     <li id="delitos_pgj"><a href="#!"><i class="material-icons">cloud</i>Filtrar por tipo de arma</a></li>
     <li id="metrobus"><a href="#!"><i class="material-icons">cloud</i>Filtrar por fecha</a></li>
     -->
-    <li><div class="divider"></div></li>
-    <li><a class="subheader">Subheader</a></li>
-    <li><a class="waves-effect" href="#!">Delitos del fuero común</a></li>
   </ul>
         
   
@@ -152,11 +163,72 @@
     <div id="map"></div>
   </div>
 
+  <!-- Modal para el rango de fechas -->
+  <div id="modal1" class="modal" >
+    <div class="modal-content">
+      <div class="container">
+        <div class="row">
+          <div class="section center col s12">
+            <h5>Selecciona el rango de fechas</h5>
+            <div class="divider"></div><br>
+          </div>
+          <div class="center col s6">
+            <div id="fechaIniS" >
+                Fecha Inicio<input id="fechaIni" type="text" class="center selectFecha">
+            </div>
+          </div>
+          <div class="center col s6">
+              Fecha Fin<input id="fechaFin" type="text" class="center selectFecha">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+        <a class="waves-effect waves-light btn-small red darken-4" id='btnClearFiltroFechas'>
+            <i class="material-icons right">delete_forever</i>
+            Limpiar
+        </a>
+        <a class="waves-effect waves-light btn-small blue darken-2"  id="btnFiltroFechas" >
+            <i class="material-icons right">send</i>
+            Aplicar
+        </a>
+    </div>
+  </div>
+
+    <!-- Modal Structure -->
+    <div id="modalNN" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h5>Detalle</h5>
+        <div id="detalleD">
+        </div>
+      </div>
+    </div>
+  
   <!-- Evento para filtros --> 
   <script>
-    document.getElementById('filtro').onclick=() => {
-      let elems = document.querySelectorAll('.sidenav');
-      let instances = M.Sidenav.init(elems, edge='left');
+    let toDataTables=(id) =>{
+
+      let newTable=$("#"+id).clone();
+      $("#detalleD").empty();
+      newTable.DataTable( {
+        responsive: true,
+        bPaginate: false,
+        bLengthChange: false,
+        bFilter: false,
+      });
+      newTable.removeClass("hide");
+      newTable.addClass("display");
+      $("#detalleD").append(newTable );
+      
+      $("#modalNN").modal('open');
+      /*
+      $("#example").DataTable( {
+        responsive: true,
+        bPaginate: false,
+        bLengthChange: false,
+        bFilter: false,
+      });
+      */
     };
   </script>
 </body>
@@ -171,8 +243,13 @@
 
 <!--JQuery-->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.js"></script>
 <!-- Index --> 
 <script src="js/index.js"></script>
 <!-- Materialize JS --> 
+<!-- LOCAL -->
+<script src="js/lib/materialize.js"></script>
+<!-- CDNX
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+-->
 </html>

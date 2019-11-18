@@ -5,9 +5,10 @@ import * as Markers from '../drawable/Markers';
  * Diferentes estilos de Mapas
  */
 const capa1 =  L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
-  maxZoom: 19,
+  maxZoom: 18,
   attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
+
 const capa2 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -51,6 +52,8 @@ export let pFiltroAlcaldias = L.tileLayer.wms("http://"+F.urlGeoserver+"/geoserv
 	styles: 'pruebas:FiltroAlcaldias'
 });
 
+
+
 let layerGroup = L.layerGroup({
 	'Alcaldias': pAlcaldias
 });
@@ -61,16 +64,27 @@ let layerGroup = L.layerGroup({
 export const map = L.map('map',{
 	center: [19.2998164,-99.1807436],
 	zoom: 8,
-	layers: [capa1]
+	maxZoom: 19,
+	layers:[wikimedia]
 });
-
-
 export let baseMaps = {
-	'Hidro':capa1,
-	'OSM':capa2
+	'Mapa':wikimedia
+	//'Hidro':capa2,
+};
+export let overlayMaps = {
+	"Alcaldías": pAlcaldias.addTo(map)
+	//'Marker': marcador
 };
 
-let icono = L.icon({
+/**
+ * Controles del mapa
+ */
+export let layercontrol = L.control.layers(baseMaps, overlayMaps,{
+	position: "topright"
+}).addTo(map);
+
+
+let customIcon = L.icon({
 	iconUrl: Markers.getFromFeature('robo'),
 	iconSize:     [38, 35], // size of the icon
 	shadowSize:   [50, 64], // size of the shadow
@@ -78,22 +92,7 @@ let icono = L.icon({
 	shadowAnchor: [4, 62],  // the same for the shadow
 	popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 })
-let marcador = L.marker([19.2998164,-99.1807436],{icon: icono});
-
-
-
-export let overlayMaps = {
-	"Alcaldías": pAlcaldias.addTo(map),
-	'Marker': marcador
-};
-
-/**
- * Controles del mapa
- */
-export let layercontrol = L.control.layers(baseMaps, overlayMaps, {
-	position: "topright"
-}).addTo(map);
-
+let marcador = L.marker([19.2998164,-99.1807436],{icon: customIcon});
 
 
 //let latlng = L.latLng(39.924, 116.463); //coordenadas de CDMX
