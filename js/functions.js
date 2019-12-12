@@ -2,22 +2,26 @@ import * as C from './drawable/Components';
 import * as Service from './service/wms_service';
 import {markers as Markers} from './drawable/Markers';
 import {getFromFeature as getCrimeIcon} from './drawable/Markers';
-
+import {ipServidor} from './conf_servidor'
 let clearFA = false;
+
+
 /**
  * Parametros para la obtencion de los datos de Geoserver
  */
-export const urlGeoserver = '192.168.43.203:8080';//'10.100.79.52:8080'; //:1234 en otros dispositivos 
+export const urlGeoserver = ipServidor+':8080';//'10.100.79.52:8080'; //:1234 en otros dispositivos 
 export const pathGeoServer ="/geoserver/cic_ipn/";
 export const capaAlcaldiasGeoServer = 'cic_ipn:alcaldias';
 export const capaDelitosGeoServer = "cic_ipn:InfoDelitos";
 export const maxFeaturesGS = 9873;
 
+/**
+ * Parametros de filtros
+ */
 let cql_filter_A = '';
-let cql_filter_A_d = "nomgeo LIKE '%'";
+//let cql_filter_A_d = "nomgeo LIKE '%'";
 let cql_filter_PGJ = "";
-let cql_filter_PGJ_d = "nombreAlcaldia ILIKE '%'";
-
+//let cql_filter_PGJ_d = "nombreAlcaldia ILIKE '%'";
 let cql_filter_Rango = '';
 let cql_filter_Tipo = '';
 let cql_filter_Arma = '';
@@ -283,6 +287,10 @@ const selectAlcaldia = (alcaldia) =>{
     return filter;
 };
 
+/**
+ * Función para aplicar el tipo de arma utilizada
+ * @param {valorTipoArma} value 
+ */
 const selectArma=(value)=>{
     switch (value) {
         case 'Arma blanca':
@@ -293,6 +301,7 @@ const selectArma=(value)=>{
             return "NOT ILIKE '%ARMA%'"
     }
 };
+
 /**
  * Prepara el fltrado por alcaldias
  */
@@ -317,12 +326,6 @@ const applyFilterA = () => {
                 cql_filter_A += " OR nomgeo='" + divs[i].getAttribute('value') + "' ";
                 cql_filter_PGJ += " OR nombreAlcaldia " + selectAlcaldia(divs[i].getAttribute('value')) + " ";
             }
-            /*
-            divs[i].addEventListener("click",function() {
-                //Aquí la función que se ejecutará cuando se dispare el evento
-                alert(this.innerHTML); //En este caso alertaremos el texto del cliqueado
-            });
-            */
         }
         //let sideNavInstance = M.Sidenav.getInstance($('.sidenav'));
         if(cql_filter_A.length==0 || cql_filter_PGJ.length==0){
@@ -406,21 +409,26 @@ const applyDateFilter = (dateRange) => {
 /**
  * Funciones de preparacion de elementos
  */
+// Aplica el filtro de alcaldias
 let applyfilterAlcaldias = document.getElementById('send_filtroA_b').onclick = () => {
     applyFilterA();
 };
+
+// Limpia el filtro de alcaldias
 let clearfilterAlcaldias = document.getElementById('clear_filtroA_b').onclick = () => {
     clearFA = true;
     clearFilterA();
 };
 
+// Prepara y aplica el filtro de fehas 
 document.getElementById('btnFiltroFechas').onclick = ()=>{
     //let fechaIn = M.Datepicker.getInstance();
     let fechaIni = $('#fechaIni').val();
     let fechaFin = $('#fechaFin').val();
 
     if(fechaIni.length==0 || fechaFin.length==0 ){
-        console.log("Selecciona fechas");
+        let toastHTML = '<span>Selecciona ambas fechas</span><button class="btn-flat toast-action">OK</button>';
+        M.toast({html: toastHTML});
     }else{
         console.log(fechaIni);
         console.log(fechaFin);
@@ -428,21 +436,23 @@ document.getElementById('btnFiltroFechas').onclick = ()=>{
         applyDateFilter(cql_filter_Rango);
         $('#modal1').modal('close');
     }
-    
 };
+
+// Limpia el filtro de fechas
 document.getElementById('btnClearFiltroFechas').onclick = () =>{
     cql_filter_Rango = '';
     $('#fechaIni').val('');
     $('#fechaFin').val('');
 };
 
-
+// Selecciona todos los elementos del filtro de tipoDelitos
 document.getElementById('send_filtroTipoDelitos_b').onclick = () => {
     cql_filter_Tipo = '';
-    //Selecciona todos los elementos del filtro de tipoDelitos
     let elementos = document.getElementsByClassName("tipoDelitos");
     applyFilterTipo(elementos);
 };
+
+// Limpia todos los elementos del filtro de tipo de delito
 document.getElementById('clear_filtroTipoDelitos_b').onclick = () => {    
     let divs = document.getElementsByClassName("tipoDelitos");
     for (let i=0; i < divs.length; i++) {
@@ -451,15 +461,14 @@ document.getElementById('clear_filtroTipoDelitos_b').onclick = () => {
     cql_filter_Tipo = '';
 };
 
-
+// Selecciona todos los elementos del filtro de tipoArmas
 document.getElementById('send_filtroArmas_b').onclick = () => {
     cql_filter_Arma = '';
-    //Selecciona todos los elementos del filtro de tipoArmas
     let elementos = document.getElementsByClassName("tipoArmas");
     applyFilterArmas(elementos);
 };
 
-
+// Limpia todos los elementos del filtro de tipoArmas
 document.getElementById('clear_filtroArmas_b').onclick = () => {    
     let divs = document.getElementsByClassName("tipoArmas");
     for (let i=0; i < divs.length; i++) {
@@ -467,34 +476,3 @@ document.getElementById('clear_filtroArmas_b').onclick = () => {
     }
     cql_filter_Arma = '';
 };
-
-/*
-let zona_alcaldias = new Image({
-    opacity: 0.8,
-    source: new ImageWMS({
-      url: 'http://localhost:8080/geoserver/pruebas/wms?transparent=true',
-      params: {'LAYERS': 'pruebas:mapa_alcaldias'},
-      serverType: 'geoserver',
-      crossOrigin:'anonymous'
-    })
-  });
-  const wmsLayer = new TileLayer({
-    source: zona_pgj  
-  });
-*/
-
-/*
-$(".Alcaldia").on( 'change', function() {
-    aplicarFiltros();
-    if( $(this).is(':checked') ) {
-        console.log("El checkbox con valor " + $(this).val() + " is CHECKED");
-        repaintWMSAlcaldias();
-        //cql = "nomgeo='Iztapalapa'"
-    }
-    else {
-        console.log("El checkbox con valor " + $(this).val() + "is UNCHECKED");
-        repaintWMSAlcaldias();
-        //cql = "cvegeo>='09001'"
-    }
-});
-*/
